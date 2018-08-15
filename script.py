@@ -2,6 +2,7 @@ from __future__ import print_function
 import os, sys
 from PIL import Image
 import numpy as np
+from sty import fg, rs
 
 ASCII_VALS = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
 MAX_VAL = 255
@@ -53,10 +54,21 @@ def generate_char_array(arr):
             ascii_arr[x][y] = ASCII_VALS[index]
     return ascii_arr
 
-def print_ascii_image(arr):
+def print_bw_ascii_image(arr):
     for r in arr:
         line = [ i + i + i for i in r]
         print("".join(line))
+
+def print_color(color_arr, char_arr):
+    dim =  get_size(color_arr)
+    for i in range(dim[1]):
+        row = ""
+        for j in range(dim[0]):
+            pixel_color = color_arr[i][j]
+            r, g, b = pixel_color[0], pixel_color[1], pixel_color[2]
+            char = char_arr[i][j]
+            row += fg(r, g, b) + char + char + char + fg.rs
+        print(row, sep='')
 
 if __name__ == "__main__":
     # import image
@@ -72,4 +84,10 @@ if __name__ == "__main__":
     brightness_type = int(input("Do you want to map brightness using average (1), lightness (2), or luminosity (3)?: "))
     b_arr = generate_brightness_array(a_arr, brightness_type)
     c_arr = generate_char_array(b_arr)
-    print_ascii_image(c_arr)
+    has_color = int(input("Black & White (0) or Color (1)?: "))
+    if(has_color == 0):
+        print_bw_ascii_image(c_arr)
+    elif(has_color == 1):
+        # take a_array values
+        # output text
+        print_color(a_arr, c_arr)
